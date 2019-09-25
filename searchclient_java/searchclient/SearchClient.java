@@ -3,6 +3,7 @@ package searchclient;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -27,11 +28,13 @@ public class SearchClient
         Color[] agentColors = new Color[10];
         Color[] boxColors = new Color[26];
         String line = serverMessages.readLine();
+        int max =0;
         while (!line.startsWith("#"))
         {
             String[] split = line.split(":");
             Color color = Color.fromString(split[0].strip());
             String[] entities = split[1].split(",");
+            if(entities.length>max)max=entities.length;
             for (String entity : entities)
             {
                 char c = entity.strip().charAt(0);
@@ -46,6 +49,10 @@ public class SearchClient
             }
             line = serverMessages.readLine();
         }
+        agentColors = Arrays.copyOf(agentColors, max);
+        boxColors = Arrays.copyOf(boxColors, max);
+        //System.out.println("AGENTCOLOR SIZE: "+ agentColors.length);
+        //System.out.println("BoxCOLOR SIZE: "+ boxColors.length);
 
         // Read initial state.
         // line is currently "#initial".
@@ -56,8 +63,9 @@ public class SearchClient
         char[][] boxes = new char[130][130];
         line = serverMessages.readLine();
         int row = 0;
+        int tmpcol= 0;
         while (!line.startsWith("#"))
-        {
+        {   
             for (int col = 0; col < line.length(); ++col)
             {
                 char c = line.charAt(col);
@@ -77,14 +85,25 @@ public class SearchClient
                     walls[row][col] = true;
                 }
             }
+            //save nb of cols
+            if(row==0)tmpcol=line.length();
 
             ++row;
             line = serverMessages.readLine();
+           
         }
-        agentRows = Arrays.copyOf(agentRows, numAgents);
-        agentCols = Arrays.copyOf(agentCols, numAgents);
 
-        // Read goal state.
+        //trim nb of columns
+        for (int i =0;i< walls.length;i++) {
+            walls[i]= Arrays.copyOf(walls[i], tmpcol);
+            boxes[i]= Arrays.copyOf(boxes[i], tmpcol);
+        }
+        //trim rows
+        walls=Arrays.copyOf(walls,row);
+        boxes = Arrays.copyOf(boxes,row);
+        agentRows = Arrays.copyOf(agentRows, numAgents);
+        agentCols = Arrays.copyOf(agentCols, numAgents);// Read goal state.
+        
         // line is currently "#goal".
         char[][] goals = new char[130][130];
         line = serverMessages.readLine();
