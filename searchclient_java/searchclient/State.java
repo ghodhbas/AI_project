@@ -15,7 +15,7 @@ public class State
     */
     public int[] agentRows;
     public int[] agentCols;
-    public Color[] agentColors;
+    public static Color[] agentColors;
 
     /*
         The walls, boxes, and goals arrays are indexed from the top-left of the level, row-major order (row, col).
@@ -30,7 +30,7 @@ public class State
     */
     public static boolean[][] walls;
     public char[][] boxes;
-    public Color[] boxColors;
+    public static Color[] boxColors;
     public static char[][] goals;
 
     public final State parent;
@@ -68,7 +68,7 @@ public class State
         // Copy parent.
         this.agentRows = Arrays.copyOf(parent.agentRows, parent.agentRows.length);
         this.agentCols = Arrays.copyOf(parent.agentCols, parent.agentCols.length);
-        this.agentColors = Arrays.copyOf(parent.agentColors, parent.agentColors.length);
+        //this.agentColors = Arrays.copyOf(parent.agentColors, parent.agentColors.length);
 
         //commented because variable is static
         //this.walls = new boolean[parent.walls.length][];
@@ -81,7 +81,7 @@ public class State
         {
             this.boxes[i] = Arrays.copyOf(parent.boxes[i], parent.boxes[i].length);
         }
-        this.boxColors = Arrays.copyOf(parent.boxColors, parent.boxColors.length);
+        //this.boxColors = Arrays.copyOf(parent.boxColors, parent.boxColors.length);
         //this.goals = new char[parent.goals.length][];
         //for (int i = 0; i < parent.goals.length; i++)
         //{
