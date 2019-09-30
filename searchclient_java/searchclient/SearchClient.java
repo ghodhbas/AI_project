@@ -102,7 +102,7 @@ public class SearchClient
         }
         //trim rows
         walls=Arrays.copyOf(walls,row);
-        System.out.println("walls SIZE: "+ walls.length +",  "+walls[0].length);
+        //System.out.println("walls SIZE: "+ walls.length +",  "+walls[0].length);
         boxes = Arrays.copyOf(boxes,row);
         agentRows = Arrays.copyOf(agentRows, numAgents);
         agentCols = Arrays.copyOf(agentCols, numAgents);// Read goal state.
