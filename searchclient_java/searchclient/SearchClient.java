@@ -34,7 +34,9 @@ public class SearchClient
             String[] split = line.split(":");
             Color color = Color.fromString(split[0].strip());
             String[] entities = split[1].split(",");
+
             if(entities.length>max)max=entities.length;
+
             for (String entity : entities)
             {
                 char c = entity.strip().charAt(0);
@@ -86,7 +88,7 @@ public class SearchClient
                 }
             }
             //save nb of cols
-            if(row==0)tmpcol=line.length();
+            if(tmpcol<line.length())tmpcol=line.length();
 
             ++row;
             line = serverMessages.readLine();
@@ -100,6 +102,7 @@ public class SearchClient
         }
         //trim rows
         walls=Arrays.copyOf(walls,row);
+        System.out.println("walls SIZE: "+ walls.length +",  "+walls[0].length);
         boxes = Arrays.copyOf(boxes,row);
         agentRows = Arrays.copyOf(agentRows, numAgents);
         agentCols = Arrays.copyOf(agentCols, numAgents);// Read goal state.
