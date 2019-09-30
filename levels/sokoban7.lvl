@@ -1,0 +1,21 @@
+#domain
+hospital
+#levelname
+FOMAbispebjerg
+#colors
+blue: 0, A,B
+#initial
++++++++
++0A  ++
++ A+  +
++ A   +
++    ++
++++++++
+#goal
++++++++
++ A  ++
++  +  +
++   A +
++A   ++
++++++++
+#end
