@@ -111,10 +111,12 @@ public class SearchClient
         char[][] goals = new char[130][130];
         line = serverMessages.readLine();
         row = 0;
+        tmpcol = 0;
         while (!line.startsWith("#"))
         {
             for (int col = 0; col < line.length(); ++col)
-            {
+            {   
+                if(line.length()> tmpcol) tmpcol = line.length();
                 char c = line.charAt(col);
 
                 if (('0' <= c && c <= '9') || ('A' <= c && c <= 'Z'))
@@ -126,6 +128,13 @@ public class SearchClient
             ++row;
             line = serverMessages.readLine();
         }
+
+        // Trim goals array
+        //trim nb of columns
+        for (int i =0;i< goals.length;i++) {
+            goals[i]= Arrays.copyOf(goals[i], tmpcol);
+        }
+        goals = Arrays.copyOf(goals,row);
 
         // End.
         // line is currently "#end".
