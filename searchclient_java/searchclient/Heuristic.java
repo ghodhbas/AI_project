@@ -72,10 +72,10 @@ public abstract class Heuristic
         for(int goal = 0 ; goal < nb_goals;goal++){
 
             // OPTION1:    from each goal build a distance map based on neighbour propagation  ------- O(N^2) worst case we explore every cell 4 times
-            //ArrayList<ArrayList<Integer>> distance = getdistances(goal_coord.get(goal), initialState);
+            ArrayList<ArrayList<Integer>> distance = getdistances(goal_coord.get(goal), initialState);
 
             // OPTION2:    from each goal build a distance map based Disjkstra algorithm
-            ArrayList<ArrayList<Integer>> distance = getdistances_dijkstra(goal_coord.get(goal), initialState);
+            //ArrayList<ArrayList<Integer>> distance = getdistances_dijkstra(goal_coord.get(goal), initialState);
             
             //save the goal char and its corresponding distance map
             Pair<Character, ArrayList<ArrayList<Integer>> > pair = new Pair<Character, ArrayList<ArrayList<Integer>> >(goal_coord.get(goal).getThird(), distance);
@@ -138,7 +138,6 @@ public abstract class Heuristic
                 }
                 queue.add(n);
             }
-            //update their distance if it is less than current
 
         }
         //For debugging
@@ -311,34 +310,60 @@ public abstract class Heuristic
     }
 
 
+    // we pair each goal to a closest box and calculate the total distances of those min distances + the distance to the closest agent.
     public int h(State n)
     {   
-        //sum of the distances from every box to the closest  goal?
-        int sum=0;
+        int total =0;
+
+        ArrayList<Triple<Character, Integer, Integer>> boxes = new ArrayList<Triple<Character, Integer, Integer>>();
+        //find the location and label of all boxes and store them
         for(int i =0; i< n.boxes.length;i++){
             for(int j =0; j< n.boxes[0].length;j++){
                 if ('A' <= n.boxes[i][j] && n.boxes[i][j] <= 'Z')
-                {
-                    // for every box, calculate distance to corresponding goal
-                    // find goal
-                    for(int z=0; z< distances.size();z++){
-                        //zz == index of the zth goal
-                        //verify they have the same label
-                        //TO DO: might need to change to both uppercase or lower case in the future
-                        if(n.boxes[i][j]== distances.get(z).getFirst()){
-                            sum += distances.get(z).getSecond().get(i).get(j);
-                        }
-                    }
-
-                    // add distance from agent to boxes
-                    
-
+                {   
+                    //char box = n.boxes[i][j];
+                    Triple<Character, Integer, Integer> box   =  new Triple<Character, Integer, Integer>(n.boxes[i][j], i , j);
+                    //the box will be paired to a goal
+                    boxes.add(box);
                 }
             }
         }
 
-        return sum;
+        int pairs = 0;
+        //for every goal find the closest box
+        for(int goal_index=0; goal_index< nb_goals;goal_index++){
+            if(nb_goals == pairs) return total;
+            
+            int min = Integer.MAX_VALUE;
+            int min_index =-1;
+            for(int box_index =0 ; box_index< boxes.size();box_index++){
+                //if the box matches the goal
+                if(boxes.get(box_index).getFirst() == distances.get(goal_index).getFirst()){
+                    //check if it is a new min distance (distance from goal to that box)
+
+                    //calculate the distance from the goal to the closest valid box + diatance of the agent to that box
+                    int distance_goal_box = distances.get(goal_index).getSecond().get(boxes.get(box_index).getSecond()).get(boxes.get(box_index).getThird());
+                    //we assume we have 1 agent (agent 0)
+                    //calculate the manhattan distance from the agent to the selected box
+                    int distance_agent_box = Math.abs(n.agentRows[0] - boxes.get(box_index).getSecond()) + Math.abs(n.agentCols[0] - boxes.get(box_index).getThird());
+
+                    int curr_dis =  distance_goal_box + distance_agent_box;
+                    if( curr_dis < min)
+                    {
+                        min = curr_dis;
+                        min_index = box_index;
+                    }
+                }
+            }
+            total += min;
+            boxes.remove(min_index);
+            pairs++;
+        }
+        //System.out.println(total);
+        return total;
     }
+
+
 
     public abstract int f(State n);
 
