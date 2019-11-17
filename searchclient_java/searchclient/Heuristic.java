@@ -72,10 +72,10 @@ public abstract class Heuristic
         for(int goal = 0 ; goal < nb_goals;goal++){
 
             // OPTION1:    from each goal build a distance map based on neighbour propagation  ------- O(N^2) worst case we explore every cell 4 times
-            ArrayList<ArrayList<Integer>> distance = getdistances(goal_coord.get(goal), initialState);
+            //ArrayList<ArrayList<Integer>> distance = getdistances(goal_coord.get(goal), initialState);
 
             // OPTION2:    from each goal build a distance map based Disjkstra algorithm
-            //ArrayList<ArrayList<Integer>> distance = getdistances_dijkstra(goal_coord.get(goal), initialState);
+            ArrayList<ArrayList<Integer>> distance = getdistances_dijkstra(goal_coord.get(goal), initialState);
             
             //save the goal char and its corresponding distance map
             Pair<Character, ArrayList<ArrayList<Integer>> > pair = new Pair<Character, ArrayList<ArrayList<Integer>> >(goal_coord.get(goal).getThird(), distance);
@@ -104,6 +104,7 @@ public abstract class Heuristic
     }
 
     public ArrayList<ArrayList<Integer>> getdistances_dijkstra(Triple<Integer, Integer, Character> goal_coord, State initialState ){
+        
         ArrayList<ArrayList<Integer>> distance = init_distances(goal_coord);
         
         //holds coordinates and distances ---
@@ -118,7 +119,9 @@ public abstract class Heuristic
         queue.add( new Triple<Integer, Integer, Integer> (goal_coord.getFirst(),goal_coord.getSecond(), distance.get(goal_coord.getFirst()).get(goal_coord.getSecond())));
 
         while(!queue.isEmpty()){
+            //System.out.println();
             //System.out.println(queue);
+            //System.out.println();
 
             Triple<Integer, Integer, Integer> cell = queue.poll();
             
@@ -134,9 +137,9 @@ public abstract class Heuristic
                 if( n.getThird()> cell.getThird()+1){
                     n.setThird(cell.getThird()+1);
                     distance.get(n.getFirst()).set(n.getSecond(), cell.getThird()+1);
-
+                    queue.add(n);
                 }
-                queue.add(n);
+                
             }
 
         }
