@@ -1,3 +1,2 @@
 # AI_project
-Aritificial Intelligence project
-Hi Im a collaborator now
+A Program that allows users to design and solve mazes using different AI search techniques.
